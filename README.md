@@ -1,36 +1,125 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# What Josiah Saw 👁️
 
-## Getting Started
+Welcome to **What Josiah Saw**, a horror movie blog and web app I built to showcase my programming skills and passion for horror films. This site features a handpicked horror movie every week (usually watched on **Fridays**) and allows readers to explore past films, leave their thoughts, and engage with the horror-loving community.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🎯 Project Goal
+
+I created a **full-stack horror movie blog app** where:
+
+- I feature a new horror film every Friday
+- Movies are fetched from TMDB and stored in MongoDB
+- My private admin interface allows movie management
+- Visitors can browse and (soon) comment on each movie
+- Fully responsive and mobile-friendly
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework:** Next.js (App Router)
+- **Database:** MongoDB
+- **Styling:** Tailwind CSS
+- **API:** The Movie Database (TMDB)
+- **IDE:** WebStorm
+
+---
+
+## 📁 Folder Structure
+
+```
+/whatjosiahwatched
+├── /app
+│   ├── /page.tsx             # Homepage
+│   ├── /admin-only/page.tsx  # Admin dashboard
+│   └── /api/movies/route.ts  # API routes for movies
+├── /components
+│   ├── Navbar.tsx
+│   ├── Footer.tsx
+│   └── MovieCard.tsx
+├── /lib
+│   └── mongodb.ts            # MongoDB connection logic
+├── /scripts
+│   └── batchImport.ts        # Bulk import from CSV
+├── .env.local                # Environment variables
+└── README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔌 TMDB Integration
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- I search TMDB for movies by title
+- Auto-fetch metadata: title, overview, genres, image
+- I avoid duplicate entries using TMDB ID
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📁 MongoDB Schema
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Database:** `whatjosiahwatched`\
+**Collection:** `Movies`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```ts
+{
+  id: Number,            // TMDB ID
+  title: String,
+  overview: String,
+  backdrop_path: String,
+  genres: [String],
+  updatedAt: Date,
+  featured: Boolean      // true for the weekly feature
+}
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🖥️ Admin Dashboard
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Private access only for me
+- I can add new movies by title
+- I can set one as the featured film
+- I can delete existing entries
+
+---
+
+## 📄 Homepage Features
+
+- 🎬 Large banner for my featured movie
+- 🧭 Navigation bar (global)
+- 🔗 Footer with my social links
+- 👻 Secret moving button to access my admin page
+
+---
+
+## 🔃 Bulk Import
+
+- I support `.csv` movie lists
+- My script auto-fetches from TMDB and inserts to MongoDB
+- Skips duplicates based on TMDB ID
+
+---
+
+## 🔮 Future Features
+
+- 🗳️ User comments and upvotes
+- 🧟‍♂️ Filter by genre/date
+- 📱 Enhanced mobile UX
+- 📊 Watch history visualization
+
+---
+
+## 🎃 Name Origin
+
+> "What Josiah Watched" is both a nod to the 2021 psychological horror film and a personal twist on my Friday night tradition.
+
+---
+
+## 📫 Connect
+
+Made with 💀 by me, Josiah.
+
+---
+
+*Built to terrify and testify to my code.*
