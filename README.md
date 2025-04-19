@@ -1,6 +1,6 @@
-# What Josiah Saw 👁️
+# What Josiah Watched 👁️
 
-Welcome to **What Josiah Saw**, a horror movie blog and web app I built to showcase my programming skills and passion for horror films. This site features a handpicked horror movie every week (usually watched on **Fridays**) and allows readers to explore past films, leave their thoughts, and engage with the horror-loving community.
+Welcome to **What Josiah Watched**, a horror movie blog and web app I built to showcase my programming skills and passion for horror films. This site features a handpicked horror movie every week (usually watched on **Fridays**) and allows readers to explore past films, leave their thoughts, and engage with the horror-loving community.
 
 ---
 
