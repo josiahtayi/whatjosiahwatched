@@ -6,10 +6,13 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "import-movies": "ts-node scripts/batchImport.ts"
   },
   "dependencies": {
     "axios": "^1.8.4",
+    "date-fns": "^4.1.0",
+    "dotenv": "^16.4.5",
     "gray-matter": "^4.0.3",
     "mongodb": "^6.15.0",
     "next": "15.3.1",
@@ -29,6 +32,7 @@
     "eslint-config-next": "15.3.1",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.4",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }
