@@ -1,4 +1,4 @@
-
+import { TMDB } from 'tmdb-ts'
 // Use environment variables for API key
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const TMDB_API_KEY = process.env.TMDB_API_KEY || 'b9fe3c4ce087d7a94be07eca4e7904ba'; // Fallback to existing key if env var not set

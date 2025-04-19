@@ -135,8 +135,7 @@ export default function AdminPage() {
             if (!res.ok) {
                 throw new Error(`Failed to add movie: ${res.status}`);
             }
-            
-            const data = await res.json();
+            await res.json();
             setStatus(`✅ Movie "${movie.title}" added successfully!`);
             
             // Refresh movie list
@@ -170,8 +169,7 @@ export default function AdminPage() {
             if (!res.ok) {
                 throw new Error(`Failed to set featured movie: ${res.status}`);
             }
-            
-            const data = await res.json();
+            await res.json();
             setStatus("✅ Featured movie updated successfully!");
         } catch (error) {
             console.error("Error setting featured movie:", error);

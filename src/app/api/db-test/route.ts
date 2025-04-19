@@ -5,7 +5,7 @@ export async function GET() {
   try {
     console.log("API: Testing database connection");
     
-    const { db, client } = await connectToDatabase();
+    const { db } = await connectToDatabase();
     
     // Test database connection with ping
     await db.command({ ping: 1 });

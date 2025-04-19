@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase, collectionName } from "@/lib/mongodb";
 import { fetchMovieDetails } from "@/lib/tmdb";
+import {TMDBMovieDetails, MovieData, TMDBPerson, TMDBGenre} from '@/lib/types';
 
 export async function GET() {
   try {
@@ -25,7 +26,7 @@ export async function GET() {
     
     console.log(`Found ${movies.length} movies in database`);
     
-    // Log first movie for debugging if available
+    // Log the first movie for debugging if available
     if (movies.length > 0) {
       console.log("Sample movie data:", {
         id: movies[0]._id,
@@ -35,7 +36,7 @@ export async function GET() {
       });
     }
     
-    // Return the movies data as JSON
+    // Return the movie data as JSON
     return NextResponse.json(movies);
   } catch (error) {
     console.error("Failed to fetch movies:", error);
@@ -86,14 +87,14 @@ export async function POST(request: Request) {
       if (movieDetails.credits) {
         // Find director from crew
         const directorPerson = movieDetails.credits.crew?.find(
-          (person: any) => person.job === "Director"
+          (person: TMDBPerson) => person.job === "Director"
         );
         director = directorPerson?.name || "";
         
         // Get top cast members
         cast = movieDetails.credits.cast
           ?.slice(0, 5)
-          .map((person: any) => person.name) || [];
+          .map((person: TMDBPerson) => person.name) || [];
       }
       
       // Format movie data for MongoDB
@@ -104,7 +105,7 @@ export async function POST(request: Request) {
         releaseDate: movieDetails.release_date,
         posterPath: movieDetails.poster_path,
         backdrop_path: movieDetails.backdrop_path,
-        genres: movieDetails.genres?.map((genre: any) => genre.name) || [],
+        genres: movieDetails.genres?.map((genre: TMDBGenre) => genre.name) || [],
         director,
         cast,
         addedAt: new Date()
@@ -124,10 +125,10 @@ export async function POST(request: Request) {
       });
     }
     
-    // If we only have a title, use old approach (search and add)
+    // If we only have a title, use the old approach (search and add)
     else if (body.title) {
       console.log(`API: Adding movie with title: ${body.title}`);
-      // This is placeholder for backward compatibility
+      // This is a placeholder for backward compatibility
       // In a real implementation, this would search TMDB and add the first result
       
       return NextResponse.json({ 

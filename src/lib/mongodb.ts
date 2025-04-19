@@ -1,8 +1,8 @@
+import { MongoClient, ServerApiVersion, Db } from 'mongodb';
 
-import { MongoClient, ServerApiVersion } from 'mongodb';
-
-const uri ="mongodb+srv://davidtayi19:i7nvab8rseAD1ptA@josiah.u9j92b9.mongodb.net/?retryWrites=true&w=majority&appName=Josiah";
-const dbName = 'whatjosiahwatched';
+// Use environment variables for sensitive information
+const uri = process.env.MONGODB_URI || "";
+const dbName = process.env.MONGODB_DB || 'whatjosiahwatched';
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -15,7 +15,7 @@ const client = new MongoClient(uri, {
 
 // Cache the client connection to reuse between API calls
 let cachedClient: MongoClient | null = null;
-let cachedDb: any = null;
+let cachedDb: Db | null = null;
 
 export async function connectToDatabase() {
     // If we already have a connection, use it
@@ -27,7 +27,7 @@ export async function connectToDatabase() {
     if (!cachedClient) {
         cachedClient = await client.connect();
     }
-    
+
     if (!cachedDb) {
         cachedDb = cachedClient.db(dbName);
     }
