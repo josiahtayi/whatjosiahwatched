@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone', // or 'export' if fully static
   images: {
-    domains: ['image.tmdb.org'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -9,9 +9,6 @@ const nextConfig = {
         pathname: '**',
       },
     ],
-  },
-  experimental: {
-    serverActions: true,
   },
 };
 
