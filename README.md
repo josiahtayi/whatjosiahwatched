@@ -61,18 +61,6 @@ I created a **full-stack horror movie blog app** where:
 **Database:** `whatjosiahwatched`\
 **Collection:** `Movies`
 
-```ts
-{
-  id: Number,            // TMDB ID
-  title: String,
-  overview: String,
-  backdrop_path: String,
-  genres: [String],
-  updatedAt: Date,
-  featured: Boolean      // true for the weekly feature
-}
-```
-
 ---
 
 ## 🖥️ Admin Dashboard
@@ -112,7 +100,7 @@ I created a **full-stack horror movie blog app** where:
 
 ## 🎃 Name Origin
 
-> "What Josiah Watched" is both a nod to the 2021 psychological horror film and a personal twist on my Friday night tradition.
+> "What Josiah Watched" is a nod to the 2021 psychological horror film and a personal twist on my Friday night tradition.
 
 ---
 
