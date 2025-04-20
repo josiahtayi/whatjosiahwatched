@@ -47,7 +47,7 @@ export default function AdminPage() {
     const [selectedFeaturedId, setSelectedFeaturedId] = useState<string>("");
     const [currentFeaturedMovie, setCurrentFeaturedMovie] = useState<Movie | null>(null);
 
-    // Fetch existing movies for the feature section
+    // Fetch existing movies from the feature section
     useEffect(() => {
         async function fetchMovies() {
             try {

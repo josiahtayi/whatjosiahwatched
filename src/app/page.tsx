@@ -38,7 +38,7 @@ export default function HomePage() {
     const [dbStatus, setDbStatus] = useState<DbStatus>({ connected: false });
     const [debugMode, setDebugMode] = useState(false);
 
-    // First check database connection
+    // First, check database connection
     useEffect(() => {
         fetch("/api/db-test")
             .then(res => res.json())

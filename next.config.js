@@ -1,9 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: 'standalone', // keep this if needed
-    experimental: {
-        appDir: true,
-    },
+    basePath: '/whatjosiahwatched',
+    output: 'export', // keep this if needed
     images: {
         remotePatterns: [
             {
