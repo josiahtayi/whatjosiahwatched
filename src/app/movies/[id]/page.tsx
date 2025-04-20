@@ -23,13 +23,12 @@ interface Movie {
     _id?: string;
     rating?: number;
 }
-export const dynamic = "force-dynamic";
 
 export default function MovieDetailPage() {
     const params = useParams();
     const router = useRouter();
     const movieId = params.id as string;
-    
+
     const [movie, setMovie] = useState<Movie | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -67,7 +66,7 @@ export default function MovieDetailPage() {
     // Handle new comment added
     const handleCommentAdded = (newComment: Comment) => {
         if (movie) {
-            const updatedMovie = { 
+            const updatedMovie = {
                 ...movie,
                 comments: [...(movie.comments || []), newComment]
             };
@@ -86,7 +85,7 @@ export default function MovieDetailPage() {
             });
 
             if (!response.ok) {
-                throw new Error(`Failed to update rating: ${response.status}`);
+                new Error(`Failed to update rating: ${response.status}`);
             }
 
             setRating(newRating);
@@ -98,7 +97,7 @@ export default function MovieDetailPage() {
                 };
                 setMovie(updatedMovie);
             }
-            
+
         } catch (error) {
             console.error("Error updating rating:", error);
             setError("Failed to update rating");
@@ -135,7 +134,7 @@ export default function MovieDetailPage() {
                 <Navbar />
                 <div className="flex flex-col items-center justify-center h-[600px] gap-6">
                     <div className="text-2xl text-red-400">{error || "Movie not found"}</div>
-                    <button 
+                    <button
                         onClick={handleBack}
                         className="px-6 py-3 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition-colors"
                     >
@@ -152,13 +151,13 @@ export default function MovieDetailPage() {
             <Navbar />
 
             {/* Hero Section with Backdrop */}
-            <section className="relative w-full h-[500px] bg-cover bg-center" 
-                style={{ 
-                    backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url(https://image.tmdb.org/t/p/original${movie.backdrop_path || movie.posterPath})` 
+            <section className="relative w-full h-[500px] bg-cover bg-center"
+                style={{
+                    backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url(https://image.tmdb.org/t/p/original${movie.backdrop_path || movie.posterPath})`
                 }}>
                 <div className="absolute bottom-0 left-0 w-full p-8 max-w-6xl mx-auto">
-                    <button 
-                        onClick={handleBack} 
+                    <button
+                        onClick={handleBack}
                         className="mb-6 flex items-center gap-2 text-gray-300 hover:text-white transition-colors"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -178,7 +177,7 @@ export default function MovieDetailPage() {
                     )}
                 </div>
             </section>
-            
+
             {/* Movie Details Section */}
             <section className="py-12 px-6 max-w-6xl mx-auto">
                 <div className="flex flex-col md:flex-row gap-10">
@@ -197,9 +196,9 @@ export default function MovieDetailPage() {
                                 No Image Available
                             </div>
                         )}
-                        
+
                         {movie.tmdbId && (
-                            <a 
+                            <a
                                 href={`https://www.themoviedb.org/movie/${movie.tmdbId}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -208,7 +207,7 @@ export default function MovieDetailPage() {
                                 View on TMDB
                             </a>
                         )}
-                        
+
                         {movie.genres && movie.genres.length > 0 && (
                             <div className="mb-6">
                                 <h3 className="text-lg font-bold mb-2">Genres</h3>
@@ -222,21 +221,21 @@ export default function MovieDetailPage() {
                             </div>
                         )}
                     </div>
-                    
+
                     {/* Right Column - Details */}
                     <div className="md:w-2/3">
                         <h2 className="text-2xl font-bold mb-4">Overview</h2>
                         <p className="text-gray-200 text-lg mb-8 leading-relaxed">
                             {movie.overview || "No overview available."}
                         </p>
-                        
+
                         {movie.director && (
                             <div className="mb-6">
                                 <h2 className="text-2xl font-bold mb-4">Director</h2>
                                 <p className="text-gray-200 text-lg">{movie.director}</p>
                             </div>
                         )}
-                        
+
                         {movie.cast && movie.cast.length > 0 && (
                             <div className="mb-10">
                                 <h2 className="text-2xl font-bold mb-4">Cast</h2>
@@ -249,7 +248,7 @@ export default function MovieDetailPage() {
                                 </div>
                             </div>
                         )}
-                        
+
                         {/* Comment Section */}
                         {movie._id && (
                             <>
@@ -264,7 +263,7 @@ export default function MovieDetailPage() {
                                         <span className="text-xl">({getRatingDisplay(rating)})</span>
                                     </div>
                                 </div>
-                                <CommentSection 
+                                <CommentSection
                                     movieId={movie._id}
                                     comments={movie.comments || []}
                                     onCommentAction={handleCommentAdded}

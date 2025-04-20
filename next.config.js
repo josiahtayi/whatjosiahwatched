@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: 'standalone', // or 'export' if fully static
+    output: 'standalone', // keep this if needed
+    experimental: {
+        appDir: true,
+    },
     images: {
         remotePatterns: [
             {
