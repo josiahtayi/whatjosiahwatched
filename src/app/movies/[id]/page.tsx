@@ -23,6 +23,7 @@ interface Movie {
     _id?: string;
     rating?: number;
 }
+export const dynamic = "force-dynamic";
 
 export default function MovieDetailPage() {
     const params = useParams();
