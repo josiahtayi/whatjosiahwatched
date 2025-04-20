@@ -10,6 +10,7 @@
     "import-movies": "ts-node scripts/batchImport.ts"
   },
   "dependencies": {
+    "@vercel/speed-insights": "^1.2.0",
     "axios": "^1.8.4",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.5",
