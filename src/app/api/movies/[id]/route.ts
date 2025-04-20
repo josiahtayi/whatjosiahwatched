@@ -56,6 +56,8 @@ export async function PATCH(
       };
       
       // Add comment to a movie document
+      // @ts-ignore
+      // @ts-ignore
       const result = await db.collection(collectionName).updateOne(
         { _id: new ObjectId(id) },
         { 
