@@ -1,11 +1,11 @@
 // === Movie Detail Page ===
 "use client";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
-import CommentSection, { Comment } from "@/components/CommentSection";
+import {useParams, useRouter} from "next/navigation";
+import Footer from "@/components/Footer"; // Assuming Footer can take classNames or is styled globally
+import Navbar from "@/components/Navbar"; // Assuming Navbar can take classNames or is styled globally
+import CommentSection, {Comment} from "@/components/CommentSection";
 
 // Movie interface (same as in homepage)
 interface Movie {
@@ -23,6 +23,12 @@ interface Movie {
     _id?: string;
     rating?: number;
 }
+
+// Reusable horror container classes
+const horrorContainerClasses = "bg-zinc-900 bg-opacity-80 rounded-md p-6 border border-red-900 relative overflow-hidden";
+const horrorTextureOverlayClasses = "absolute inset-0 bg-[url('/images/horror-texture.png')] bg-cover opacity-5 mix-blend-overlay pointer-events-none";
+const horrorHeadingClasses = "text-2xl font-serif mb-4 text-red-500 flex items-center";
+
 
 export default function MovieDetailPage() {
     const params = useParams();
@@ -81,94 +87,125 @@ export default function MovieDetailPage() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ rating: newRating }),
+                body: JSON.stringify({rating: newRating}),
             });
 
             if (!response.ok) {
                 new Error(`Failed to update rating: ${response.status}`);
             }
 
+            // Optimistically update rating
             setRating(newRating);
 
+            // Update movie state as well
             if (movie) {
-                const updatedMovie = {
-                    ...movie,
-                    rating: newRating
-                };
-                setMovie(updatedMovie);
+                setMovie(prevMovie => prevMovie ? {...prevMovie, rating: newRating} : null);
             }
 
         } catch (error) {
             console.error("Error updating rating:", error);
-            setError("Failed to update rating");
+            // Revert rating or show an error message to the user
+            setError("Failed to update rating"); // Could also revert the rating state here
         }
     };
 
+
+    // NOTE: Updated getRatingDisplay to use the emoji ratings directly based on the buttons below
     const getRatingDisplay = (ratingValue: number | null) => {
         if (ratingValue === null) return "No rating yet";
         switch (ratingValue) {
-            case 5: return "👍👍";  // Double thumbs up
-            case 4: return "👍";     // Single thumbs up
-            case 3: return "➖";     // Horizontal bar
-            case 2: return "👎";     // Single thumbs down
-            case 1: return "👎👎";  // Double thumbs down
-            default: return "No rating";
+            case 5:
+                return "🩸🩸";  // Double Blood
+            case 4:
+                return "🩸";     // Single Blood
+            case 3:
+                return "🪦";     // Tombstone
+            case 2:
+                return "💀";     // Skull
+            case 1:
+                return "💀💀";  // Double Skull
+            default:
+                return "No rating";
         }
     };
 
+    // The horror aesthetic requires specific backgrounds and colors.
+    // Let's wrap the entire loading/error message divs in themed containers.
     if (loading) {
         return (
-            <main className="min-h-screen bg-zinc-950 text-white">
-                <Navbar />
-                <div className="flex items-center justify-center h-[600px]">
-                    <div className="animate-pulse text-2xl text-gray-400">Loading movie details...</div>
+            // Apply the main background gradient here
+            <main
+                className="min-h-screen text-shadow-gray-700 bg-gradient-to-br from-black via-gray-950 to-red-900 flex flex-col">
+                <Navbar/> {/* Assuming Navbar has the appropriate z-index */}
+                <div className="flex-grow flex items-center justify-center p-6"> {/* flex-grow to push footer down */}
+                    <div className={`${horrorContainerClasses} text-center max-w-md w-full`}>
+                        <div className={horrorTextureOverlayClasses}></div>
+                        {/* Texture overlay */}
+                        <div className="relative z-10"> {/* Content z-index */}
+                            <div className="animate-pulse text-2xl font-serif text-red-400">Gathering dark secrets...
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <Footer />
+                <Footer/>
             </main>
         );
     }
 
     if (error || !movie) {
         return (
-            <main className="min-h-screen bg-zinc-950 text-white">
-                <Navbar />
-                <div className="flex flex-col items-center justify-center h-[600px] gap-6">
-                    <div className="text-2xl text-red-400">{error || "Movie not found"}</div>
-                    <button
-                        onClick={handleBack}
-                        className="px-6 py-3 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition-colors"
-                    >
-                        Go Back
-                    </button>
+            // Apply the main background gradient here
+            <main
+                className="min-h-screen text-shadow-gray-700 bg-gradient-to-br from-black via-gray-950 to-red-900 flex flex-col">
+                <Navbar/>
+                <div className="flex-grow flex items-center justify-center p-6">
+                    <div
+                        className={`${horrorContainerClasses} text-center max-w-md w-full flex flex-col items-center gap-6`}>
+                        <div className={horrorTextureOverlayClasses}></div>
+                        {/* Texture overlay */}
+                        <div className="relative z-10 flex flex-col items-center gap-6"> {/* Content z-index */}
+                            <div
+                                className="text-2xl font-serif text-red-400">{error || "A presence was not found here..."}</div>
+                            <button
+                                onClick={handleBack}
+                                className="px-6 py-3 bg-red-900 hover:bg-red-800 text-white font-serif rounded-lg transition-colors border border-red-700 shadow-lg" // Themed button
+                            >
+                                Return From Whence You Came
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <Footer />
+                <Footer/>
             </main>
         );
     }
 
     return (
-        <main className="min-h-screen bg-zinc-950 text-white">
-            <Navbar />
 
-            {/* Hero Section with Backdrop */}
-            <section className="relative w-full h-[500px] bg-cover bg-center"
+        <main
+            className="min-h-screen text-shadow-gray-700 bg-gradient-to-br from-black via-gray-950 to-red-900 relative overflow-hidden">
+            <Navbar/>
+            <section
+                className="relative w-full h-[500px] bg-cover bg-center border-b-4 border-red-900" // Added bottom border
                 style={{
-                    backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url(https://image.tmdb.org/t/p/original${movie.backdrop_path || movie.posterPath})`
+                    backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.9)), url(https://image.tmdb.org/t/p/original${movie.backdrop_path || movie.posterPath})` // Increased bottom gradient opacity
                 }}>
-                <div className="absolute bottom-0 left-0 w-full p-8 max-w-6xl mx-auto">
+                <div className="absolute bottom-0 left-0 w-full p-8 max-w-6xl mx-auto z-10">
                     <button
                         onClick={handleBack}
-                        className="mb-6 flex items-center gap-2 text-gray-300 hover:text-white transition-colors"
+                        className="mb-6 flex items-center gap-2 text-red-300 hover:text-red-100 font-serif transition-colors" // Themed text color
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                             stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                  d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                         </svg>
-                        Back to Movies
+                        Back to the Abyss
                     </button>
-                    <h1 className="text-4xl md:text-6xl font-bold mb-4">{movie.foundTitle}</h1>
+                    <h1 className="text-4xl md:text-6xl font-bold font-serif mb-4 text-red-400">{movie.foundTitle}</h1> {/* Themed heading */}
                     {movie.releaseDate && (
-                        <p className="text-xl text-gray-300 mb-2">
-                            Released: {new Date(movie.releaseDate).toLocaleDateString(undefined, {
+                        <p className="text-xl text-red-300 font-serif mb-2"> {/* Themed text */}
+                            Unleashed: {new Date(movie.releaseDate).toLocaleDateString(undefined, {
                                 year: 'numeric',
                                 month: 'long',
                                 day: 'numeric'
@@ -177,105 +214,139 @@ export default function MovieDetailPage() {
                     )}
                 </div>
             </section>
-
-            {/* Movie Details Section */}
-            <section className="py-12 px-6 max-w-6xl mx-auto">
-                <div className="flex flex-col md:flex-row gap-10">
-                    {/* Left Column - Poster and Quick Info */}
-                    <div className="md:w-1/3">
+            <section className="py-12 px-6 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 relative z-10">
+                <div className="md:col-span-1 flex flex-col items-center md:items-start gap-6">
+                    <div className="w-full max-w-sm"> {/* Constrain poster width */}
                         {(movie.posterPath || movie.backdrop_path) ? (
                             <Image
                                 src={`https://image.tmdb.org/t/p/w500${movie.posterPath || movie.backdrop_path}`}
                                 alt={`Poster for ${movie.foundTitle}`}
                                 width={500}
                                 height={750}
-                                className="w-full rounded-lg shadow-2xl mb-6"
+                                className="w-full rounded-lg shadow-2xl border border-red-900" // Added border to poster
                             />
                         ) : (
-                            <div className="w-full aspect-[2/3] bg-zinc-800 flex items-center justify-center text-gray-500 rounded-lg mb-6">
+                            <div
+                                className="w-full aspect-[2/3] bg-zinc-800 flex items-center justify-center text-gray-500 font-serif rounded-lg border border-red-900">
                                 No Image Available
-                            </div>
-                        )}
-
-                        {movie.tmdbId && (
-                            <a
-                                href={`https://www.themoviedb.org/movie/${movie.tmdbId}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-block w-full text-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors mb-4"
-                            >
-                                View on TMDB
-                            </a>
-                        )}
-
-                        {movie.genres && movie.genres.length > 0 && (
-                            <div className="mb-6">
-                                <h3 className="text-lg font-bold mb-2">Genres</h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {movie.genres.map((genre, i) => (
-                                        <span key={i} className="px-3 py-1 bg-zinc-800 rounded-full text-sm">
-                                            {genre}
-                                        </span>
-                                    ))}
-                                </div>
                             </div>
                         )}
                     </div>
 
-                    {/* Right Column - Details */}
-                    <div className="md:w-2/3">
-                        <h2 className="text-2xl font-bold mb-4">Overview</h2>
-                        <p className="text-gray-200 text-lg mb-8 leading-relaxed">
-                            {movie.overview || "No overview available."}
-                        </p>
 
-                        {movie.director && (
-                            <div className="mb-6">
-                                <h2 className="text-2xl font-bold mb-4">Director</h2>
-                                <p className="text-gray-200 text-lg">{movie.director}</p>
+                    {movie.tmdbId && (
+                        <a
+                            href={`https://www.themoviedb.org/movie/${movie.tmdbId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-block w-full max-w-sm text-center px-4 py-2 bg-red-900 hover:bg-red-800 text-white font-serif font-medium rounded-lg transition-colors border border-red-700 shadow-lg" // Themed button
+                        >
+                            View on The Movie Database of Horrors
+                        </a>
+                    )}
+                    {movie.genres && movie.genres.length > 0 && (
+                        <div className={`${horrorContainerClasses} w-full max-w-sm`}> {/* Apply container styles */}
+                            <div className={horrorTextureOverlayClasses}></div>
+                            {/* Texture overlay */}
+                            <div className="relative z-10"> {/* Content z-index */}
+                                <h3 className={`${horrorHeadingClasses}`}>
+                                    <span className="mr-2">🏷️</span> Categories of Cruelty
+                                </h3> {/* Themed heading */}
+                                <div className="flex flex-wrap gap-2">
+                                    {movie.genres.map((genre, i) => (
+                                        <span key={i}
+                                              className="px-3 py-1 bg-red-900 text-red-200 rounded-full text-sm font-serif border border-red-700"> {/* Themed genre tags */}
+                                            {genre}
+                                         </span>
+                                    ))}
+                                </div>
                             </div>
-                        )}
-
-                        {movie.cast && movie.cast.length > 0 && (
-                            <div className="mb-10">
-                                <h2 className="text-2xl font-bold mb-4">Cast</h2>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        </div>
+                    )}
+                </div>
+                <div className="md:col-span-2 flex flex-col gap-10">
+                    <div className={horrorContainerClasses}>
+                        <div className={horrorTextureOverlayClasses}></div>
+                        <div className="relative z-10">
+                            <h2 className={`${horrorHeadingClasses}`}>
+                                <span className="mr-2">📖</span> The Gruesome Chronicle
+                            </h2>
+                            <p className="text-red-200 text-lg mb-0 leading-relaxed font-serif">
+                                {movie.overview || "No horrifying overview available."}
+                            </p>
+                        </div>
+                    </div>
+                    {movie.director && (
+                        <div className={horrorContainerClasses}>
+                            <div className={horrorTextureOverlayClasses}></div>
+                            <div className="relative z-10">
+                                <h2 className={`${horrorHeadingClasses}`}>
+                                    <span className="mr-2">🎬</span> Master of Mayhem
+                                </h2>
+                                <p className="text-red-200 text-lg font-serif">{movie.director}</p>
+                            </div>
+                        </div>
+                    )}
+                    {movie.cast && movie.cast.length > 0 && (
+                        <div className={horrorContainerClasses}>
+                            <div className={horrorTextureOverlayClasses}></div>
+                            <div className="relative z-10">
+                                <h2 className={`${horrorHeadingClasses}`}>
+                                    <span className="mr-2">🎭</span> The Unholy Ensemble
+                                </h2>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                                     {movie.cast.map((actor, i) => (
-                                        <div key={i} className="bg-zinc-900 p-4 rounded-lg">
+                                        <div key={i}
+                                             className="bg-red-900 bg-opacity-70 p-4 rounded-lg border border-red-700 font-serif text-red-200">
                                             <p className="font-medium">{actor}</p>
                                         </div>
                                     ))}
                                 </div>
                             </div>
-                        )}
+                        </div>
+                    )}
 
-                        {/* Comment Section */}
-                        {movie._id && (
-                            <>
-                                <div className="mb-6">
-                                    <h2 className="text-2xl font-bold mb-4">Rating</h2>
-                                    <div className="flex items-center gap-4">
-                                        <button onClick={() => handleRatingChange(5)} className="text-3xl hover:opacity-70">{rating === 5 ? '' : '👍👍'}</button>
-                                        <button onClick={() => handleRatingChange(4)} className="text-3xl hover:opacity-70">{rating === 4 ? '' : '👍'}</button>
-                                        <button onClick={() => handleRatingChange(3)} className="text-3xl hover:opacity-70">{rating === 3 ? '' : '➖'}</button>
-                                        <button onClick={() => handleRatingChange(2)} className="text-3xl hover:opacity-70">{rating === 2 ? '' : '👎'}</button>
-                                        <button onClick={() => handleRatingChange(1)} className="text-3xl hover:opacity-70">{rating === 1 ? '' : '👎👎'}</button>
-                                        <span className="text-xl">({getRatingDisplay(rating)})</span>
-                                    </div>
+                    <CommentSection movieId={movie._id || ""} comments={movie.comments || []}
+                                    onCommentAction={handleCommentAdded}/>
+
+                    {movie._id && (
+                        <div className={`${horrorContainerClasses} bg-opacity-80 border-red-900`}>
+                            <div className={horrorTextureOverlayClasses}></div>
+                            <div className="relative z-10">
+                                <h2 className={`${horrorHeadingClasses}`}>
+                                    <span className="mr-2">💉</span> Blood Rating
+                                </h2>
+                                <div className="flex items-center gap-4 relative z-10">
+
+                                    <button onClick={() => handleRatingChange(5)}
+                                            className="text-4xl hover:opacity-70 transition-all hover:scale-110 duration-300 focus:outline-none focus:ring focus:ring-red-500 rounded-md">
+                                        🩸🩸
+                                    </button>
+                                    <button onClick={() => handleRatingChange(4)}
+                                            className="text-4xl hover:opacity-70 transition-all hover:scale-110 duration-300 focus:outline-none focus:ring focus:ring-red-500 rounded-md">
+                                        🩸
+                                    </button>
+                                    <button onClick={() => handleRatingChange(3)}
+                                            className="text-4xl hover:opacity-70 transition-all hover:scale-110 duration-300 focus:outline-none focus:ring focus:ring-red-500 rounded-md">
+                                        🪦
+                                    </button>
+                                    <button onClick={() => handleRatingChange(2)}
+                                            className="text-4xl hover:opacity-70 transition-all hover:scale-110 duration-300 focus:outline-none focus:ring focus:ring-red-500 rounded-md">
+                                        💀
+                                    </button>
+                                    <button onClick={() => handleRatingChange(1)}
+                                            className="text-4xl hover:opacity-70 transition-all hover:scale-110 duration-300 focus:outline-none focus:ring focus:ring-red-500 rounded-md">
+                                        💀💀
+                                    </button>
+                                    <span
+                                        className="text-2xl font-serif text-red-400 ml-4">({getRatingDisplay(rating)})</span>
                                 </div>
-                                <CommentSection
-                                    movieId={movie._id}
-                                    comments={movie.comments || []}
-                                    onCommentAction={handleCommentAdded}
-                                />
-                            </>
-                        )}
-                    </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </section>
-
-            <Footer />
+            <Footer/>
         </main>
     );
 }
-

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -51,8 +51,6 @@ export default function ManualEntryPage() {
     setStatus("Adding movie to database...");
 
     try {
-      // Here you would normally send this to your API
-      // For now just log it and simulate success
       console.log("Would submit:", formData);
       
       // Simulate API call success
