@@ -266,7 +266,7 @@ export default function MovieDetailPage() {
                                 <CommentSection 
                                     movieId={movie._id}
                                     comments={movie.comments || []}
-                                    onCommentAdded={handleCommentAdded}
+                                    onCommentAction={handleCommentAdded}
                                 />
                             </>
                         )}

@@ -12,13 +12,13 @@ export interface Comment {
 interface CommentSectionProps {
   movieId: string;
   comments?: Comment[];
-  onCommentAdded: (newComment: Comment) => void;
+  onCommentAction: (newComment: Comment) => void;
 }
 
 export default function CommentSection({
   movieId, 
   comments = [],
-  onCommentAdded
+  onCommentAction
 }: CommentSectionProps) {
   const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
@@ -99,7 +99,7 @@ export default function CommentSection({
       const data = await response.json();
       
       // Call the parent component callback with the new comment
-      onCommentAdded(data.comment);
+      onCommentAction(data.comment);
       
       // Reset form
       setAuthor("");

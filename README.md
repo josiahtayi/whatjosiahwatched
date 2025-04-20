@@ -33,7 +33,7 @@ I created a **full-stack horror movie blog app** where:
 ├── /app
 │   ├── /page.tsx             # Homepage
 │   ├── /admin-only/page.tsx  # Admin dashboard
-│   └── /api/movies/route.js  # API routes for movies
+│   └── /api/movies/route.ts  # API routes for movies
 ├── /components
 │   ├── Navbar.tsx
 │   ├── Footer.tsx
