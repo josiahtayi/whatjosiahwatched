@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase, collectionName } from "@/lib/mongodb";
 import { fetchMovieDetails } from "@/lib/tmdb";
-import {TMDBMovieDetails, MovieData, TMDBPerson, TMDBGenre} from '@/lib/types';
+import { TMDBPerson, TMDBGenre} from '@/lib/types';
 
 export async function GET() {
   try {
@@ -111,11 +111,11 @@ export async function POST(request: Request) {
         addedAt: new Date()
       };
       
-      // Insert movie into database
+      // Insert a movie into a database
       const result = await db.collection(collectionName).insertOne(movieData);
       
       if (!result.acknowledged) {
-        throw new Error("Database insert failed");
+         new Error("Database insert failed");
       }
       
       return NextResponse.json({ 

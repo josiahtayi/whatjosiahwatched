@@ -1,7 +1,7 @@
 import { TMDB } from 'tmdb-ts'
-// Use environment variables for API key
+// Use environment variables for an API key
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
-const TMDB_API_KEY = process.env.TMDB_API_KEY || 'b9fe3c4ce087d7a94be07eca4e7904ba'; // Fallback to existing key if env var not set
+const TMDB_API_KEY = process.env.TMDB_API_KEY || 'b9fe3c4ce087d7a94be07eca4e7904ba'; // Fallback to an existing key if env var not set
 
 /**
  * Fetches popular movies from TMDB.
@@ -27,7 +27,7 @@ export async function searchMovies(query: string): Promise<any> {
 
 /**
  * Fetches details of a specific movie by its ID.
- * Includes credits data for cast and crew information.
+ * Include credits data for cast and crew information.
  */
 export async function fetchMovieDetails(movieId: number): Promise<any> {
     const response = await fetch(`${TMDB_BASE_URL}/movie/${movieId}?api_key=${TMDB_API_KEY}&append_to_response=credits`);

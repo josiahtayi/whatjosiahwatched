@@ -26,7 +26,7 @@ export async function PATCH(
       );
     }
 
-    // Get comment or rating data from request body
+    // Get comment or rating data from the request body
     const { author, content, rating } = await request.json();
     
     // Validate comment or rating data
@@ -48,7 +48,7 @@ export async function PATCH(
     const { db } = await connectToDatabase();
     
     if (author && content) {
-      // Create new comment object with timestamp
+      // Create a new comment object with a timestamp
       const newComment: Comment = {
         author,
         content,
@@ -56,11 +56,10 @@ export async function PATCH(
       };
       
       // Add comment to a movie document
-      // @ts-ignore
-      // @ts-ignore
       const result = await db.collection(collectionName).updateOne(
         { _id: new ObjectId(id) },
-        { 
+        {
+          //@ts-expect-error
           $push: { 
             comments: newComment 
           } 
