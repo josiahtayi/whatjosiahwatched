@@ -5,16 +5,17 @@ import { MovieComment, MovieData } from '@/lib/types';
 
 // PATCH - Add a comment or rating to a movie
 export async function PATCH(
-    request: NextRequest,
-    { params }: { params: { id: string } }  // params from the request context
+    _request: NextRequest,
+    context: { params: { id: string } }
 ) {
-  const id = params.id;
+  const params = await context.params;
+  const id  = params.id; // Ensures the correct destructuring
 
   if (!ObjectId.isValid(id)) {
     return NextResponse.json({ error: 'Invalid movie ID format' }, { status: 400 });
   }
 
-  const body = await request.json();
+  const body = await _request.json();
   const { author, content, rating } = body;
 
   if ((!author || !content) && rating === undefined) {
@@ -84,9 +85,10 @@ export async function PATCH(
 // DELETE - Remove a movie by ID
 export async function DELETE(
     _request: NextRequest,
-    { params }: { params: { id: string } }  // params from the request context
+    context: { params: { id: string } }
 ) {
-  const id = params.id;
+  const params = await context.params;
+  const id  = params.id; // Ensures the correct destructuring
 
   if (!ObjectId.isValid(id)) {
     return NextResponse.json({ error: 'Invalid movie ID format' }, { status: 400 });
@@ -105,9 +107,10 @@ export async function DELETE(
 // GET - Fetch a specific movie by ID
 export async function GET(
     _request: NextRequest,
-    { params }: { params: { id: string } }  // params from the request context
+    context: { params: { id: string } }
 ) {
-  const id = params.id;
+  const params = await context.params;
+  const id  = params.id; // Ensures the correct destructuring
 
   if (!id) {
     return NextResponse.json({ error: 'Movie ID is required' }, { status: 400 });
@@ -131,3 +134,4 @@ export async function GET(
     return NextResponse.json({ error: 'Failed to fetch movie details' }, { status: 500 });
   }
 }
+
