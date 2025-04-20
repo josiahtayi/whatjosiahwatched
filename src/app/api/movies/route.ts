@@ -11,7 +11,7 @@ export async function GET() {
     // Log collection name for debugging
     console.log(`Using collection: ${collectionName}`);
     
-    // Check if collection exists
+    // Check if a collection exists
     const collections = await db.listCollections({ name: collectionName }).toArray();
     if (collections.length === 0) {
       console.error(`Collection '${collectionName}' does not exist`);
@@ -65,7 +65,7 @@ export async function POST(request: Request) {
     if (body.tmdbId) {
       console.log(`API: Adding movie with TMDB ID: ${body.tmdbId}`);
       
-      // Check if movie already exists in database
+      // Check if a movie already exists in a database
       const existingMovie = await db.collection(collectionName).findOne({ tmdbId: body.tmdbId });
       
       if (existingMovie) {

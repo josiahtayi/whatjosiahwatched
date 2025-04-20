@@ -22,7 +22,7 @@ interface MovieData {
 
 // --- MongoDB Configuration ---
 // Get MongoDB connection string from environment variables
-const MONGO_URI = "mongodb+srv://davidtayi19:i7nvab8rseAD1ptA@josiah.u9j92b9.mongodb.net/?retryWrites=true&w=majority&appName=Josiah";
+const MONGO_URI = process.env.MONGODB_URI;
 const DB_NAME = 'whatjosiahwatched';
 const COLLECTION_NAME = 'Movies';
 
@@ -81,10 +81,10 @@ async function fetchMovieDataFromCsv(csvFilePath: string): Promise<MovieData[]> 
                     foundTitle: topResult.title,
                     tmdbId: topResult.id,
                     overview: topResult.overview,
-                    director: details?.credits?.crew?.find((c: { job: string; }) => c.job === 'Director')?.name, // Get director name
+                    director: details?.credits?.crew?.find((c) => c.job === 'Director')?.name, // Get a director name
                     cast: details?.credits?.cast?.slice(0, 5)?.map((c: { name: any; }) => c.name), // Get top 5 cast members
                     releaseDate: topResult.release_date,
-                    posterPath: topResult.poster_path,
+                    posterPath: topResult.poster_path || undefined,
                     genres: details?.genres?.map((g: { name: any; }) => g.name)
                 });
             } else {

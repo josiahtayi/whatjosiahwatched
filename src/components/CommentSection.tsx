@@ -15,10 +15,10 @@ interface CommentSectionProps {
   onCommentAdded: (newComment: Comment) => void;
 }
 
-export default function CommentSection({ 
+export default function CommentSection({
   movieId, 
-  comments = [], 
-  onCommentAdded 
+  comments = [],
+  onCommentAdded
 }: CommentSectionProps) {
   const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");

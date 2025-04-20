@@ -1,4 +1,4 @@
-// types/types.ts or lib/types.ts
+// lib/types.ts
 
 // TMDB API Types
 export interface TMDBPerson {
@@ -47,8 +47,19 @@ export interface MovieData {
     featured?: boolean;
     watchedDate?: Date;
     myRating?: number;
-    myReview?: string;
+    comments?: MovieComment[];
 }
+
+export interface MovieComment {
+    author: string;
+    content: string;
+    createdAt: Date;
+}
+
+export interface RequestParams {
+    params: { id: string };
+}
+
 
 // API Response Types
 export interface MovieApiResponse {
