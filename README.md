@@ -62,15 +62,6 @@ I created a **full-stack horror movie blog app** where:
 **Collection:** `Movies`
 
 ```ts
-{
-  id: Number,            // TMDB ID
-  title: String,
-  overview: String,
-  backdrop_path: String,
-  genres: [String],
-  updatedAt: Date,
-  featured: Boolean      // true for the weekly feature
-}
 ```
 
 ---

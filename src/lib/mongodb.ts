@@ -1,8 +1,8 @@
 import { MongoClient, ServerApiVersion, Db } from 'mongodb';
 
 // Use environment variables for sensitive information
-const uri = process.env.MONGODB_URI || "";
-const dbName = process.env.MONGODB_DB || 'whatjosiahwatched';
+const uri = process.env.MONGODB_URI;
+const dbName = process.env.MONGODB_DB;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
