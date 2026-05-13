@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { searchMovies } from "@/lib/tmdb";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   try {
     // Get the query parameter from the URL
