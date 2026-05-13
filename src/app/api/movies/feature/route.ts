@@ -1,6 +1,7 @@
 import { connectToDatabase, collectionName } from "@/lib/mongodb";
 import { NextRequest, NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
+import type { MovieData } from "@/lib/types";
 
 
 // PUT - Set a movie as featured
@@ -16,17 +17,21 @@ export async function PUT(request: NextRequest) {
     }
     
     const { db } = await connectToDatabase();
-    
+    const movies = db.collection<Omit<MovieData, '_id'>>(collectionName);
+
     // First, remove featured status from all movies
-    await db.collection(collectionName).updateMany(
+    await movies.updateMany(
       { featured: true },
       { $set: { featured: false } }
     );
-    
-    // Then, set the new featured movie
-    const result = await db.collection(collectionName).updateOne(
+
+    // Then, set the new featured movie and record the date
+    const result = await movies.updateOne(
       { _id: new ObjectId(movieId) },
-      { $set: { featured: true } }
+      {
+        $set: { featured: true },
+        $push: { featuredDates: new Date().toISOString() }
+      }
     );
     
     if (result.matchedCount === 0) {

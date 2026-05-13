@@ -5,6 +5,7 @@ import Link from "next/link";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import MovieCard from "@/components/MovieCard";
+import QuickAddCard, { type TmdbPreview } from "@/components/QuickAddCard";
 import type { MovieData as Movie } from "@/lib/types";
 
 export default function HomePage() {
@@ -13,6 +14,7 @@ export default function HomePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [debugMode, setDebugMode] = useState(false);
+    const [horrorNow, setHorrorNow] = useState<TmdbPreview[]>([]);
 
     useEffect(() => {
         fetch("/api/movies/feature")
@@ -28,6 +30,11 @@ export default function HomePage() {
             .then(data => setMovies(Array.isArray(data) ? data : data.movies ?? []))
             .catch(err => setError(`Failed to load movies (${err.message})`))
             .finally(() => setLoading(false));
+
+        fetch("/api/tmdb/horror-now")
+            .then(res => res.ok ? res.json() : [])
+            .then(data => setHorrorNow(Array.isArray(data) ? data : []))
+            .catch(() => setHorrorNow([]));
     }, []);
 
     useEffect(() => {
@@ -39,6 +46,12 @@ export default function HomePage() {
     }, []);
 
     const reversedMovies = [...movies].reverse();
+
+    function handleHorrorAdded(tmdbId: number) {
+        setHorrorNow(prev =>
+            prev.map(m => m.tmdbId === tmdbId ? { ...m, inCollection: true } : m)
+        );
+    }
 
     return (
         <main className="min-h-screen bg-zinc-950 text-white">
@@ -94,11 +107,31 @@ export default function HomePage() {
                 </div>
             )}
 
+            {/* Recent Horror section */}
+            {horrorNow.length > 0 && (
+                <section className="max-w-7xl mx-auto px-6 pt-12 pb-4">
+                    <div className="flex items-baseline gap-3 mb-6">
+                        <h2 className="text-xl font-bold font-serif text-white tracking-wide">Now in Cinemas</h2>
+                        <span className="text-xs text-zinc-600 font-serif uppercase tracking-widest">Horror · Trending</span>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                        {horrorNow.map(movie => (
+                            <QuickAddCard
+                                key={movie.tmdbId}
+                                movie={movie}
+                                onAdded={handleHorrorAdded}
+                            />
+                        ))}
+                    </div>
+                </section>
+            )}
+
             {/* Debug panel */}
             {debugMode && (
                 <div className="bg-zinc-900 ring-1 ring-white/10 rounded-lg p-4 m-6 text-xs text-zinc-400 font-mono space-y-1">
                     <p>Movies: {movies.length}</p>
                     <p>Feature: {feature?.foundTitle ?? "none"}</p>
+                    <p>Horror now: {horrorNow.length}</p>
                     {error && <p className="text-red-400">{error}</p>}
                 </div>
             )}

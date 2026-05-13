@@ -41,3 +41,25 @@ export async function fetchMovieDetails(movieId: number): Promise<TMDBMovieDetai
     }
     return response.json();
 }
+
+/**
+ * Fetches now-playing horror films (genre 27) from TMDB.
+ */
+export async function fetchHorrorNowPlaying(): Promise<TMDBPaginatedResponse<TMDBMovieDetails>> {
+    const response = await fetch(
+        `${TMDB_BASE_URL}/discover/movie?api_key=${TMDB_API_KEY}&with_genres=27&sort_by=popularity.desc&include_adult=false&language=en-US&page=1`
+    );
+    if (!response.ok) throw new Error(`TMDB horror-now failed: ${response.status}`);
+    return response.json();
+}
+
+/**
+ * Fetches TMDB recommendations for a given movie ID.
+ */
+export async function fetchRecommendations(tmdbId: number): Promise<TMDBPaginatedResponse<TMDBMovieDetails>> {
+    const response = await fetch(
+        `${TMDB_BASE_URL}/movie/${tmdbId}/recommendations?api_key=${TMDB_API_KEY}&language=en-US&page=1`
+    );
+    if (!response.ok) throw new Error(`TMDB recommendations failed: ${response.status}`);
+    return response.json();
+}

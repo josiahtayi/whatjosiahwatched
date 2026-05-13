@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import CommentSection, { Comment } from "@/components/CommentSection";
+import QuickAddCard, { type TmdbPreview } from "@/components/QuickAddCard";
 import type { MovieData as Movie } from "@/lib/types";
 
 export default function MovieDetailPage() {
@@ -16,6 +17,7 @@ export default function MovieDetailPage() {
     const [movie, setMovie] = useState<Movie | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [recommendations, setRecommendations] = useState<TmdbPreview[]>([]);
 
     useEffect(() => {
         if (!movieId) return;
@@ -30,9 +32,24 @@ export default function MovieDetailPage() {
             .finally(() => setLoading(false));
     }, [movieId]);
 
+    // Fetch recommendations once we have the movie's tmdbId
+    useEffect(() => {
+        if (!movie?.tmdbId) return;
+        fetch(`/api/tmdb/recommendations/${movie.tmdbId}`)
+            .then(res => res.ok ? res.json() : [])
+            .then(data => setRecommendations(Array.isArray(data) ? data : []))
+            .catch(() => setRecommendations([]));
+    }, [movie?.tmdbId]);
+
     const handleCommentAdded = (newComment: Comment) => {
         setMovie(prev => prev ? { ...prev, comments: [...(prev.comments || []), newComment] } : null);
     };
+
+    function handleRecoAdded(tmdbId: number) {
+        setRecommendations(prev =>
+            prev.map(m => m.tmdbId === tmdbId ? { ...m, inCollection: true } : m)
+        );
+    }
 
     if (loading) {
         return (
@@ -85,11 +102,9 @@ export default function MovieDetailPage() {
                         priority
                     />
                 )}
-                {/* Layered gradients: dark at top for nav, heavy fade at bottom */}
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/30 to-black/60" />
                 <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/60 via-transparent to-transparent" />
 
-                {/* Back button */}
                 <button
                     onClick={() => router.back()}
                     className="absolute top-6 left-6 flex items-center gap-2 text-zinc-400 hover:text-white transition-colors text-sm font-serif z-10"
@@ -101,7 +116,7 @@ export default function MovieDetailPage() {
                 </button>
             </div>
 
-            {/* Main content — poster overlaps the hero via negative top margin */}
+            {/* Main content */}
             <div className="max-w-5xl mx-auto px-6 -mt-48 relative z-10 pb-16">
                 <div className="flex flex-col md:flex-row gap-8">
 
@@ -124,11 +139,27 @@ export default function MovieDetailPage() {
 
                     {/* Title + metadata */}
                     <div className="flex flex-col justify-end pt-48 md:pt-0 min-w-0">
+                        {/* Scare of the Week badge */}
+                        {movie.featuredDates && movie.featuredDates.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mb-3">
+                                {movie.featuredDates.map((date, i) => (
+                                    <span
+                                        key={i}
+                                        className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-950/60 text-red-400 text-xs rounded-full ring-1 ring-red-900/50 font-serif"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                        Scare of the Week · {new Date(date).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+
                         <h1 className="text-4xl md:text-5xl font-bold font-serif text-white leading-tight mb-3">
                             {movie.foundTitle}
                         </h1>
 
-                        {/* Inline meta row */}
                         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-zinc-400 mb-4">
                             {year && <span>{year}</span>}
                             {movie.director && (
@@ -147,7 +178,6 @@ export default function MovieDetailPage() {
                             )}
                         </div>
 
-                        {/* Genre tags */}
                         {movie.genres && movie.genres.length > 0 && (
                             <div className="flex flex-wrap gap-2 mb-5">
                                 {movie.genres.map((genre, i) => (
@@ -181,7 +211,6 @@ export default function MovieDetailPage() {
                     </div>
                 )}
 
-                {/* Divider */}
                 <div className="w-full h-px bg-white/5 my-10" />
 
                 {/* Cast */}
@@ -205,6 +234,25 @@ export default function MovieDetailPage() {
                     comments={movie.comments || []}
                     onCommentAction={handleCommentAdded}
                 />
+
+                {/* Recommendations */}
+                {recommendations.length > 0 && (
+                    <>
+                        <div className="w-full h-px bg-white/5 my-10" />
+                        <section>
+                            <p className="text-xs uppercase tracking-widest text-zinc-600 mb-6 font-serif">More Like This</p>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                                {recommendations.map(rec => (
+                                    <QuickAddCard
+                                        key={rec.tmdbId}
+                                        movie={rec}
+                                        onAdded={handleRecoAdded}
+                                    />
+                                ))}
+                            </div>
+                        </section>
+                    </>
+                )}
             </div>
 
             <Footer />

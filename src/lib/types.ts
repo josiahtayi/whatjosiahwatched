@@ -47,6 +47,7 @@ export interface MovieData {
     cast?: string[];
     addedAt?: Date;
     featured?: boolean;
+    featuredDates?: string[];
     watchedDate?: Date;
     myRating?: number;
     comments?: MovieComment[];
