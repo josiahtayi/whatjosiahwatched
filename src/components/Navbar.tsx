@@ -1,64 +1,19 @@
 "use client";
 import Link from "next/link";
 import { ShieldAlert } from "lucide-react";
-import { useEffect, useState } from "react";
 
 export default function Navbar() {
-    const [flicker, setFlicker] = useState(true);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setFlicker((prev) => !prev);
-        }, Math.random() * 1500 + 500);
-
-        return () => clearInterval(interval);
-    }, []);
-
     return (
-        <nav className="w-full p-4 bg-gradient-to-r from-black via-gray-900 to-black text-white flex justify-between items-center shadow-lg border-b border-red-900 relative overflow-hidden">
-            {/* Blood drip effect */}
-            <div className="absolute top-full left-0 w-full h-2 bg-red-700 animate-drip" />
-
+        <nav className="sticky top-0 z-50 w-full px-6 py-4 bg-black/85 backdrop-blur-md text-white flex justify-between items-center border-b border-red-900/50 shadow-lg shadow-black/50">
+            <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-red-800/60 to-transparent" />
             <Link href="/">
-                <span className={`text-2xl font-extrabold tracking-wide transition-colors duration-300 ${flicker ? 'text-red-600' : 'text-red-400'} flicker-text`}>
+                <span className="text-2xl font-extrabold tracking-wide font-serif text-red-500 animate-flicker">
                     What Josiah Watched
                 </span>
             </Link>
-            <div className="flex items-center space-x-3">
-                <Link href="/admin" aria-label="Admin Area" className="text-white opacity-40 hover:opacity-100 transition-opacity duration-300">
-                    <ShieldAlert size={20} />
-                </Link>
-            </div>
-
-            {/* Additional styles */}
-            <style jsx>{`
-                @keyframes drip {
-                    0% {
-                        transform: translateY(-100%);
-                    }
-                    100% {
-                        transform: translateY(0);
-                    }
-                }
-
-                @keyframes flicker {
-                    0%, 100% {
-                        opacity: 1;
-                    }
-                    45% {
-                        opacity: 0.4;
-                    }
-                    55% {
-                        opacity: 0.8;
-                    }
-                    60% {
-                        opacity: 0.2;
-                    }
-                    70% {
-                        opacity: 1;
-                    }
-                }
-            `}</style>
+            <Link href="/admin" aria-label="Admin Area" className="text-white opacity-25 hover:opacity-100 transition-opacity duration-300">
+                <ShieldAlert size={20} />
+            </Link>
         </nav>
     );
 }

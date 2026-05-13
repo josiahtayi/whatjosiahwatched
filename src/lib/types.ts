@@ -34,16 +34,18 @@ export interface TMDBMovieDetails {
 
 // MongoDB Movie Schema
 export interface MovieData {
+    _id?: string;
+    searchTitle?: string;
     tmdbId: number;
     foundTitle: string;
     overview: string;
-    releaseDate: string;
-    posterPath: string | null;
-    backdrop_path: string | null;
-    genres: string[];
-    director: string;
-    cast: string[];
-    addedAt: Date;
+    releaseDate?: string;
+    posterPath?: string | null;
+    backdrop_path?: string | null;
+    genres?: string[];
+    director?: string;
+    cast?: string[];
+    addedAt?: Date;
     featured?: boolean;
     watchedDate?: Date;
     myRating?: number;

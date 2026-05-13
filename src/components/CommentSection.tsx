@@ -1,215 +1,119 @@
-// src/components/CommentSection.tsx
 "use client";
 import React, { useState } from "react";
 
-// Interface for the comment structure
 export interface Comment {
-  author: string;
-  content: string;
-  createdAt: string | Date;
+    author: string;
+    content: string;
+    createdAt: string | Date;
 }
 
 interface CommentSectionProps {
-  movieId: string;
-  comments?: Comment[];
-  onCommentAction: (newComment: Comment) => void;
+    movieId: string;
+    comments?: Comment[];
+    onCommentAction: (newComment: Comment) => void;
 }
 
-export default function CommentSection({
-                                         movieId,
-                                         comments = [],
-                                         onCommentAction
-                                       }: CommentSectionProps) {
-  const [author, setAuthor] = useState("");
-  const [content, setContent] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  // Format date for display using native JavaScript
-  const formatDate = (dateString: string | Date) => {
+function timeAgo(dateString: string | Date): string {
     const date = typeof dateString === "string" ? new Date(dateString) : dateString;
-    const now = new Date();
-    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+    if (seconds < 60)   return "just now";
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+    if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`;
+    return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+}
 
-    // Less than a minute
-    if (diffInSeconds < 60) {
-      return "just moments ago"; // Themed
-    }
+export default function CommentSection({ movieId, comments = [], onCommentAction }: CommentSectionProps) {
+    const [author, setAuthor] = useState("");
+    const [content, setContent] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    // Less than an hour
-    if (diffInSeconds < 3600) {
-      const minutes = Math.floor(diffInSeconds / 60);
-      return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`;
-    }
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError(null);
+        if (!author.trim()) { setError("Name is required"); return; }
+        if (!content.trim()) { setError("Comment is required"); return; }
 
-    // Less than a day
-    if (diffInSeconds < 86400) {
-      const hours = Math.floor(diffInSeconds / 3600);
-      return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
-    }
-
-    // Less than a week
-    if (diffInSeconds < 604800) {
-      const days = Math.floor(diffInSeconds / 86400);
-      return `${days} ${days === 1 ? 'day' : 'days'} ago`;
-    }
-
-    // Format as a readable date
-    return date.toLocaleDateString(undefined, {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Reset error state
-    setError(null);
-
-    // Validate inputs
-    if (!author.trim()) {
-      setError("Please enter your name");
-      return;
-    }
-
-    if (!content.trim()) {
-      setError("Please enter a comment");
-      return;
-    }
-
-    try {
-      setIsSubmitting(true);
-
-      // Submit comment to API
-      const response = await fetch(`/api/movies/${movieId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // Assuming the backend expects `author` and `content` for adding a comment
-        body: JSON.stringify({ author, content }),
-      });
-
-      if (!response.ok) {
-        // Attempt to parse error message from backend
-        let errorMessage = "Failed to add comment";
+        setIsSubmitting(true);
         try {
-          const errorData = await response.json();
-          errorMessage = errorData.error || errorMessage;
-        } catch (jsonError) {
-          // Ignore JSON parsing error, use default message
-          console.error("Failed to parse error response:", jsonError);
+            const res = await fetch(`/api/movies/${movieId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ author, content }),
+            });
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data.error || "Failed to post comment");
+            }
+            const data = await res.json();
+            onCommentAction(data.comment ?? { author, content, createdAt: new Date() });
+            setAuthor("");
+            setContent("");
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Failed to post comment");
+        } finally {
+            setIsSubmitting(false);
         }
-        throw new Error(errorMessage);
-      }
+    };
 
-      const data = await response.json();
+    return (
+        <div>
+            <p className="text-xs uppercase tracking-widest text-zinc-600 mb-6 font-serif">
+                Comments {comments.length > 0 && <span className="text-zinc-700">({comments.length})</span>}
+            </p>
 
-      // Call the parent component callback with the new comment
-      // Assuming the backend returns the newly added comment object in the response data
-      if (data.comment) {
-        onCommentAction(data.comment);
-      } else {
-        // Fallback: Manually create a comment object if the backend doesn't return it
-        onCommentAction({ author, content, createdAt: new Date() });
-      }
-
-
-      // Reset form
-      setAuthor("");
-      setContent("");
-    } catch (err) {
-      console.error("Error adding comment:", err);
-      setError(err instanceof Error ? err.message : "Failed to add comment");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-      // Apply the themed container classes to the main div
-      <div className="bg-zinc-900 bg-opacity-80 rounded-md p-6 border border-red-900 relative overflow-hidden mt-8">
-        {/* Texture overlay */}
-        <div className="absolute inset-0 bg-[url('/images/horror-texture.png')] bg-cover opacity-5 mix-blend-overlay pointer-events-none"></div>
-
-        {/* Content goes inside a relative z-10 div */}
-        <div className="relative z-10">
-          <h2 className="text-2xl font-bold font-serif mb-4 text-red-500 flex items-center">
-            <span className="mr-2">📝</span> Whispers From Beyond
-          </h2> {/* Themed heading */}
-
-          {/* Comment List */}
-          {comments.length > 0 ? (
-              <div className="space-y-6 mb-8">
-                {comments.map((comment, index) => (
-                    <div key={index} className="bg-red-900 bg-opacity-70 p-4 rounded-lg border border-red-700"> {/* Themed comment item */}
-                      <div className="flex justify-between items-center mb-2">
-                        <p className="font-bold text-red-200 font-serif">{comment.author}</p> {/* Themed author */}
-                        <p className="text-xs text-red-400 font-serif"> {/* Themed date */}
-                          {formatDate(comment.createdAt)}
-                        </p>
-                      </div>
-                      <p className="text-red-100 font-serif">{comment.content}</p> {/* Themed content */}
-                    </div>
-                ))}
-              </div>
-          ) : (
-              <p className="text-red-400 font-serif mb-8">No comments yet. Be the first to share your thoughts!</p>
-            )}
-
-          {/* Comment Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <h3 className="text-xl font-bold font-serif mb-2 text-red-400 flex items-center"> {/* Themed form heading */}
-              <span className="mr-2">✍️</span> Add a Comment
-            </h3>
-
-            {error && (
-                <div className="bg-red-900/30 border border-red-800 text-red-200 font-serif px-4 py-3 rounded-lg"> {/* Themed error message */}
-                  {error}
+            {/* Comment list */}
+            {comments.length > 0 && (
+                <div className="space-y-5 mb-8">
+                    {comments.map((comment, i) => (
+                        <div key={i} className="flex gap-4">
+                            <div className="w-8 h-8 rounded-full bg-zinc-800 ring-1 ring-white/10 flex items-center justify-center text-zinc-400 text-xs font-bold flex-shrink-0">
+                                {comment.author[0]?.toUpperCase()}
+                            </div>
+                            <div className="flex-grow min-w-0">
+                                <div className="flex items-baseline gap-2 mb-1">
+                                    <span className="text-sm font-semibold text-zinc-200 font-serif">{comment.author}</span>
+                                    <span className="text-xs text-zinc-600">{timeAgo(comment.createdAt)}</span>
+                                </div>
+                                <p className="text-zinc-400 text-sm leading-relaxed">{comment.content}</p>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             )}
 
-            <div>
-              <label htmlFor="author" className="block text-sm font-medium font-serif mb-2 text-red-300"> {/* Themed label */}
-                Your Name
-              </label>
-              <input
-                  type="text"
-                  id="author"
-                  value={author}
-                  onChange={(e) => setAuthor(e.target.value)}
-                  className="w-full bg-zinc-950 border border-red-900 text-red-100 font-serif rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent placeholder-red-600" // Themed input
-                  placeholder="Enter your name"
-              />
-            </div>
+            {comments.length === 0 && (
+                <p className="text-zinc-600 text-sm mb-8 font-serif italic">No comments yet. Be the first.</p>
+            )}
 
-            <div>
-              <label htmlFor="content" className="block text-sm font-medium font-serif mb-2 text-red-300"> {/* Themed label */}
-                Your Comment
-              </label>
-              <textarea
-                  id="content"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  rows={4}
-                  className="w-full bg-zinc-950 border border-red-900 text-red-100 font-serif rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent placeholder-red-600" // Themed textarea
-                  placeholder="Share your thoughts about this movie..."
-              />
-            </div>
-
-            <button
-                type="submit"
-                disabled={isSubmitting}
-                className={`px-6 py-3 bg-red-900 hover:bg-red-800 text-white font-serif font-medium rounded-lg transition-colors border border-red-700 shadow-lg ${ // Themed button
-                    isSubmitting ? "opacity-70 cursor-not-allowed" : ""
-                }`}
-            >
-              {isSubmitting ? "Submitting..." : "Post Comment"} {/* Themed button text */}
-            </button>
-          </form>
+            {/* Comment form */}
+            <form onSubmit={handleSubmit} className="space-y-3">
+                {error && (
+                    <p className="text-red-400 text-xs">{error}</p>
+                )}
+                <input
+                    type="text"
+                    value={author}
+                    onChange={e => setAuthor(e.target.value)}
+                    placeholder="Your name"
+                    className="w-full bg-zinc-900 border-0 ring-1 ring-white/10 focus:ring-red-700 focus:outline-none text-zinc-200 rounded-lg px-4 py-2.5 text-sm placeholder-zinc-600 transition-shadow"
+                />
+                <textarea
+                    value={content}
+                    onChange={e => setContent(e.target.value)}
+                    placeholder="Leave a comment..."
+                    rows={3}
+                    className="w-full bg-zinc-900 border-0 ring-1 ring-white/10 focus:ring-red-700 focus:outline-none text-zinc-200 rounded-lg px-4 py-2.5 text-sm placeholder-zinc-600 transition-shadow resize-none"
+                />
+                <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="px-5 py-2 bg-red-900 hover:bg-red-800 text-white text-sm font-serif rounded-lg transition-colors disabled:opacity-50"
+                >
+                    {isSubmitting ? "Posting..." : "Post Comment"}
+                </button>
+            </form>
         </div>
-      </div>
-  );
+    );
 }

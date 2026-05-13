@@ -63,6 +63,29 @@ export async function PATCH(
     );
   }
 
+  if (body.movieUpdate) {
+    const { foundTitle, director, overview } = body.movieUpdate;
+    const fields: Record<string, string> = {};
+    if (foundTitle?.trim()) fields.foundTitle = foundTitle.trim();
+    if (director !== undefined) fields.director = director.trim();
+    if (overview?.trim()) fields.overview = overview.trim();
+
+    if (Object.keys(fields).length === 0) {
+      return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
+    }
+
+    const result = await movies.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: fields }
+    );
+
+    if (result.matchedCount === 0) {
+      return NextResponse.json({ error: 'Movie not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: 'Movie updated successfully' });
+  }
+
   if (rating !== undefined) {
     const result = await movies.updateOne(
         { _id: new ObjectId(id) },
