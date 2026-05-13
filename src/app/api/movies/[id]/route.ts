@@ -33,7 +33,7 @@ export async function PATCH(
   }
 
   const { db } = await connectToDatabase();
-  const movies = db.collection<MovieData>(collectionName);
+  const movies = db.collection<Omit<MovieData, '_id'>>(collectionName);
 
   if (author && content) {
     const newComment: MovieComment = {
@@ -46,9 +46,7 @@ export async function PATCH(
         { _id: new ObjectId(id) },
         {
           $push: {
-            comments: {
-              $each: [newComment]
-            }
+            comments: newComment
           }
         }
     );

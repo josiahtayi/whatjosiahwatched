@@ -3,7 +3,9 @@
     "allow": [
       "Bash(curl -s http://localhost:3000/api/movies/feature)",
       "Bash(Remove-Item \"c:\\\\Users\\\\Josiah\\\\Documents\\\\Work\\\\whatjosiahwatched\\\\public\\\\sfx\\\\creepy-hover.mp3\")",
-      "Bash(Remove-Item \"c:\\\\Users\\\\Josiah\\\\Documents\\\\Work\\\\whatjosiahwatched\\\\public\\\\sfx\" -ErrorAction SilentlyContinue)"
+      "Bash(Remove-Item \"c:\\\\Users\\\\Josiah\\\\Documents\\\\Work\\\\whatjosiahwatched\\\\public\\\\sfx\" -ErrorAction SilentlyContinue)",
+      "Bash(gh pr *)",
+      "Bash(npm run *)"
     ]
   }
 }

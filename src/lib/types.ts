@@ -55,7 +55,7 @@ export interface MovieData {
 export interface MovieComment {
     author: string;
     content: string;
-    createdAt: Date;
+    createdAt: string | Date;
 }
 
 export interface RequestParams {

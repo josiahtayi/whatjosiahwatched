@@ -383,7 +383,7 @@ export default function AdminPage() {
             {/* Undo toast */}
             {pendingDelete && (
                 <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-zinc-800 ring-1 ring-white/10 text-white px-5 py-3 rounded-lg shadow-2xl z-50 text-sm">
-                    <span className="text-zinc-300">"{pendingDelete.foundTitle}" will be deleted</span>
+                    <span className="text-zinc-300">&ldquo;{pendingDelete.foundTitle}&rdquo; will be deleted</span>
                     <button onClick={handleUndoDelete} className="text-red-400 hover:text-red-300 font-semibold">Undo</button>
                 </div>
             )}
