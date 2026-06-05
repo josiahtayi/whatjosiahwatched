@@ -10,6 +10,9 @@ const cinzel = Cinzel({ variable: "--font-cinzel", subsets: ["latin"], weight: [
 export const metadata: Metadata = {
     title: "What Josiah Watched",
     description: "Where I track the best scares",
+    icons: {
+        icon: "/icon.svg",
+    },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
