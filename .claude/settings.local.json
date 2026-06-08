@@ -6,7 +6,10 @@
       "Bash(Remove-Item \"c:\\\\Users\\\\Josiah\\\\Documents\\\\Work\\\\whatjosiahwatched\\\\public\\\\sfx\" -ErrorAction SilentlyContinue)",
       "Bash(gh pr *)",
       "Bash(npm run *)",
-      "Bash(mkdir -p \"c:\\\\Users\\\\Josiah\\\\Documents\\\\Work\\\\whatjosiahwatched\\\\src\\\\app\\\\api\\\\tmdb\\\\horror-now\" && mkdir -p \"c:\\\\Users\\\\Josiah\\\\Documents\\\\Work\\\\whatjosiahwatched\\\\src\\\\app\\\\api\\\\tmdb\\\\recommendations\\\\[tmdbId]\")"
+      "Bash(mkdir -p \"c:\\\\Users\\\\Josiah\\\\Documents\\\\Work\\\\whatjosiahwatched\\\\src\\\\app\\\\api\\\\tmdb\\\\horror-now\" && mkdir -p \"c:\\\\Users\\\\Josiah\\\\Documents\\\\Work\\\\whatjosiahwatched\\\\src\\\\app\\\\api\\\\tmdb\\\\recommendations\\\\[tmdbId]\")",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\Josiah\\\\Documents\\\\Work\\\\whatjosiahwatched\\\\app\" -Recurse -Filter \"*.tsx\" -File)",
+      "Bash(Select-Object FullName)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\Josiah\\\\Documents\\\\Work\\\\whatjosiahwatched\" -Force)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Josiah\\Documents\\Work\\whatjosiahwatched\\src\\app\\api\\tmdb\\recommendations"
