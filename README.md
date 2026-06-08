@@ -1,113 +1,118 @@
-# What Josiah Watched 👁️
+# What Josiah Watched
 
-Welcome to **What Josiah Watched**, a horror movie blog and web app I built to showcase my programming skills and passion for horror films. This site features a handpicked horror movie every week (usually watched on **Fridays**) and allows readers to explore past films, leave their thoughts, and engage with the horror-loving community.
-
----
-
-## 🎯 Project Goal
-
-I created a **full-stack horror movie blog app** where:
-
-- I feature a new horror film every Friday
-- Movies are fetched from TMDB and stored in MongoDB
-- My private admin interface allows movie management
-- Visitors can browse and (soon) comment on each movie
-- Fully responsive and mobile-friendly
+A full-stack horror film curation and tracking app built with Next.js 15, MongoDB, and the TMDB API. I feature a new horror film every Friday and use this project to document what I've watched, discover new films, and sharpen my full-stack skills.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-- **Framework:** Next.js (App Router)
-- **Database:** MongoDB
-- **Styling:** Tailwind CSS
-- **API:** The Movie Database (TMDB)
-- **IDE:** WebStorm
+| Layer | Tech |
+|---|---|
+| Framework | Next.js 15 (App Router), React 19 |
+| Language | TypeScript |
+| Database | MongoDB Atlas |
+| Styling | Tailwind CSS v4 |
+| External API | TMDB v3 (via `tmdb-ts`) |
+| Deployment | Vercel |
 
 ---
 
-## 📁 Folder Structure
+## Features
+
+**Homepage**
+- Cinematic hero banner for the weekly featured film
+- "Now in Cinemas" section — live horror discovery via TMDB's trending horror endpoint, with inline quick-add to collection
+
+**Film Detail Page**
+- Full metadata: cast, director, genres, runtime, overview
+- "More Like This" — TMDB-powered recommendations with inline collection add
+- Comment section for notes and reactions
+
+**Admin Dashboard** (`/admin`)
+- Password-protected private interface
+- Add films by title with auto TMDB metadata lookup
+- Set the featured film, edit metadata, delete entries
+
+**Bulk Import** (`scripts/batchImport.ts`)
+- Parses CSV movie lists
+- Auto-fetches TMDB metadata (title, cast, director, genres, poster)
+- Inserts via `insertMany()` with duplicate detection by TMDB ID
+
+---
+
+## Project Structure
 
 ```
-/whatjosiahwatched
-├── /app
-│   ├── /page.tsx             # Homepage
-│   ├── /admin-only/page.tsx  # Admin dashboard
-│   └── /api/movies/route.ts  # API routes for movies
-├── /components
+src/
+├── app/
+│   ├── page.tsx                          # Homepage
+│   ├── movies/[id]/page.tsx              # Film detail page
+│   ├── admin/page.tsx                    # Admin dashboard
+│   ├── manual/page.tsx                   # Manual entry form
+│   ├── apple-icon.tsx                    # Apple touch icon (auto-generated)
+│   └── api/
+│       ├── movies/route.ts               # GET all, POST new film
+│       ├── movies/[id]/route.ts          # GET, PATCH, DELETE by ID
+│       ├── movies/add/route.ts           # Add via TMDB lookup
+│       ├── movies/feature/route.ts       # Set featured film
+│       ├── tmdb/search/route.ts          # TMDB title search
+│       ├── tmdb/recommendations/[tmdbId] # TMDB recommendations
+│       ├── tmdb/horror-now/route.ts      # TMDB now-playing horror
+│       └── admin/auth/route.ts           # Admin authentication
+├── components/
 │   ├── Navbar.tsx
 │   ├── Footer.tsx
-│   └── MovieCard.tsx
-├── /lib
-│   └── mongodb.ts            # MongoDB connection logic
-├── /scripts
-│   └── batchImport.ts        # Bulk import from CSV
-├── .env.local                # Environment variables
-└── README.md
+│   ├── MovieCard.tsx
+│   ├── QuickAddCard.tsx                  # Inline add from discovery
+│   └── CommentSection.tsx
+├── lib/
+│   └── mongodb.ts                        # Cached MongoDB connection
+scripts/
+└── batchImport.ts                        # CSV bulk import
 ```
 
 ---
 
-## 🔌 TMDB Integration
+## MongoDB Schema
 
-- I search TMDB for movies by title
-- Auto-fetch metadata: title, overview, genres, image
-- I avoid duplicate entries using TMDB ID
+**Database:** `whatjosiahwatched` | **Collection:** `Movies`
 
----
-
-## 📁 MongoDB Schema
-
-**Database:** `whatjosiahwatched`\
-**Collection:** `Movies`
-
----
-
-## 🖥️ Admin Dashboard
-
-- Private access only for me
-- I can add new movies by title
-- I can set one as the featured film
-- I can delete existing entries
-
----
-
-## 📄 Homepage Features
-
-- 🎬 Large banner for my featured movie
-- 🧭 Navigation bar (global)
-- 🔗 Footer with my social links
-- 👻 Secret moving button to access my admin page
+```ts
+{
+  tmdbId: number,
+  foundTitle: string,
+  overview: string,
+  genres: string[],
+  director: string,
+  cast: string,
+  posterPath: string | null,
+  backdropPath: string | null,
+  releaseDate: string,
+  runtime: number,
+  myRating: number,
+  watchedDate: string,
+  featuredDate: string | null,
+  featured: boolean,
+  comments: { text: string, createdAt: Date }[]
+}
+```
 
 ---
 
-## 🔃 Bulk Import
+## Environment Variables
 
-- I support `.csv` movie lists
-- My script auto-fetches from TMDB and inserts to MongoDB
-- Skips duplicates based on TMDB ID
-
----
-
-## 🔮 Future Features
-
-- 🗳️ User comments and upvotes
-- 🧟‍♂️ Filter by genre/date
-- 📱 Enhanced mobile UX
-- 📊 Watch history visualization
+```
+MONGODB_URI=
+TMDB_API_KEY=
+ADMIN_PASSWORD=
+```
 
 ---
 
-## 🎃 Name Origin
+## Name Origin
 
-> "What Josiah Watched" is a nod to the 2021 psychological horror film and a personal twist on my Friday night tradition.
-
----
-
-## 📫 Connect
-
-Made with 💀 by me, Josiah.
+> "What Josiah Watched" is a nod to the 2021 psychological horror film *We Need to Do Something* — and a personal twist on my Friday night tradition.
 
 ---
 
-*Built to terrify and testify to my code.*
+Made by Josiah. Built to terrify and testify to my code.
