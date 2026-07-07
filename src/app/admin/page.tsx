@@ -329,7 +329,7 @@ export default function AdminPage() {
 
                 {/* Set featured */}
                 <section className={sectionClass}>
-                    <p className={labelClass}>Featured Film</p>
+                    <p id="featured-label" className={labelClass}>Featured Film</p>
                     {isLoadingMovies ? (
                         <p className="text-zinc-600 text-sm">Loading...</p>
                     ) : existingMovies.length === 0 ? (
@@ -337,11 +337,12 @@ export default function AdminPage() {
                     ) : (
                         <form onSubmit={handleSetFeatured} className="flex gap-3">
                             <select
-                                className={`${inputClass} flex-grow appearance-none`}
-                                value={selectedFeaturedId}
-                                onChange={e => setSelectedFeaturedId(e.target.value)}
-                                required
-                            >
+                                    aria-labelledby="featured-label"
+                                    className={`${inputClass} flex-grow appearance-none`}
+                                    value={selectedFeaturedId}
+                                    onChange={e => setSelectedFeaturedId(e.target.value)}
+                                    required
+                                >
                                 <option value="">Select a film...</option>
                                 {existingMovies.map(movie => (
                                     <option key={movie._id} value={movie._id!} className="bg-zinc-900">
@@ -413,16 +414,16 @@ export default function AdminPage() {
                         <h2 className="text-lg font-bold font-serif text-white mb-5">Edit Film</h2>
                         <form onSubmit={handleEditSave} className="space-y-4">
                             <div>
-                                <label className="text-xs text-zinc-500 uppercase tracking-widest font-serif mb-1.5 block">Title</label>
-                                <input type="text" value={editForm.foundTitle} onChange={e => setEditForm(f => ({ ...f, foundTitle: e.target.value }))} className={inputClass} required />
+                                <label htmlFor="edit-title" className="text-xs text-zinc-500 uppercase tracking-widest font-serif mb-1.5 block">Title</label>
+                                <input id="edit-title" type="text" value={editForm.foundTitle} onChange={e => setEditForm(f => ({ ...f, foundTitle: e.target.value }))} className={inputClass} required />
                             </div>
                             <div>
-                                <label className="text-xs text-zinc-500 uppercase tracking-widest font-serif mb-1.5 block">Director</label>
-                                <input type="text" value={editForm.director} onChange={e => setEditForm(f => ({ ...f, director: e.target.value }))} className={inputClass} />
+                                <label htmlFor="edit-director" className="text-xs text-zinc-500 uppercase tracking-widest font-serif mb-1.5 block">Director</label>
+                                <input id="edit-director" type="text" value={editForm.director} onChange={e => setEditForm(f => ({ ...f, director: e.target.value }))} className={inputClass} />
                             </div>
                             <div>
-                                <label className="text-xs text-zinc-500 uppercase tracking-widest font-serif mb-1.5 block">Overview</label>
-                                <textarea value={editForm.overview} onChange={e => setEditForm(f => ({ ...f, overview: e.target.value }))} rows={4} className={`${inputClass} resize-none`} />
+                                <label htmlFor="edit-overview" className="text-xs text-zinc-500 uppercase tracking-widest font-serif mb-1.5 block">Overview</label>
+                                <textarea id="edit-overview" value={editForm.overview} onChange={e => setEditForm(f => ({ ...f, overview: e.target.value }))} rows={4} className={`${inputClass} resize-none`} />
                             </div>
                             <div className="flex gap-3 pt-1">
                                 <button type="submit" disabled={isSaving} className={`flex-1 py-2.5 ${primaryBtn}`}>

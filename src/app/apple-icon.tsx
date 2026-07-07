@@ -8,8 +8,8 @@ export default function AppleIcon() {
         (
             <div
                 style={{
-                    width: 180,
-                    height: 180,
+                    width: "180px",
+                    height: "180px",
                     background: "#0f0f0f",
                     display: "flex",
                     alignItems: "center",
@@ -18,22 +18,20 @@ export default function AppleIcon() {
                     position: "relative",
                 }}
             >
-                {/* Red top bar accent */}
                 <div
                     style={{
                         position: "absolute",
                         top: 0,
                         left: 0,
                         right: 0,
-                        height: 6,
+                        height: "6px",
                         background: "#dc2626",
                     }}
                 />
 
-                {/* Main letter */}
                 <div
                     style={{
-                        fontSize: 100,
+                        fontSize: "100px",
                         fontWeight: 700,
                         color: "#ffffff",
                         lineHeight: 1,
@@ -43,26 +41,24 @@ export default function AppleIcon() {
                     W
                 </div>
 
-                {/* Subtitle */}
                 <div
                     style={{
-                        fontSize: 13,
+                        fontSize: "13px",
                         color: "#dc2626",
                         letterSpacing: "4px",
-                        marginTop: 4,
+                        marginTop: "4px",
                     }}
                 >
                     WATCHED
                 </div>
 
-                {/* Red bottom bar accent */}
                 <div
                     style={{
                         position: "absolute",
                         bottom: 0,
                         left: 0,
                         right: 0,
-                        height: 6,
+                        height: "6px",
                         background: "#dc2626",
                     }}
                 />

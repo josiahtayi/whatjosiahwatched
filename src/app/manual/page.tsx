@@ -66,23 +66,24 @@ export default function ManualEntryPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
-                        <label className={labelClass}>Title</label>
-                        <input type="text" name="foundTitle" value={formData.foundTitle} onChange={handleChange} className={inputClass} required />
+                        <label htmlFor="foundTitle" className={labelClass}>Title</label>
+                        <input id="foundTitle" type="text" name="foundTitle" value={formData.foundTitle} onChange={handleChange} className={inputClass} required />
                     </div>
 
                     <div>
-                        <label className={labelClass}>Overview</label>
-                        <textarea name="overview" value={formData.overview} onChange={handleChange} rows={4} className={`${inputClass} resize-none`} required />
+                        <label htmlFor="overview" className={labelClass}>Overview</label>
+                        <textarea id="overview" name="overview" value={formData.overview} onChange={handleChange} rows={4} className={`${inputClass} resize-none`} required />
                     </div>
 
                     <div>
-                        <label className={labelClass}>Director</label>
-                        <input type="text" name="director" value={formData.director || ""} onChange={handleChange} className={inputClass} />
+                        <label htmlFor="director" className={labelClass}>Director</label>
+                        <input id="director" type="text" name="director" value={formData.director || ""} onChange={handleChange} className={inputClass} />
                     </div>
 
                     <div>
-                        <label className={labelClass}>Poster Path</label>
+                        <label htmlFor="posterPath" className={labelClass}>Poster Path</label>
                         <input
+                            id="posterPath"
                             type="text"
                             name="posterPath"
                             value={formData.posterPath || ""}
@@ -94,9 +95,10 @@ export default function ManualEntryPage() {
                     </div>
 
                     <div>
-                        <label className={labelClass}>Genres</label>
+                        <label htmlFor="genreInput" className={labelClass}>Genres</label>
                         <div className="flex gap-2">
                             <input
+                                id="genreInput"
                                 type="text"
                                 value={genreInput}
                                 onChange={e => setGenreInput(e.target.value)}
