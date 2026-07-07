@@ -114,5 +114,3 @@ ADMIN_PASSWORD=
 > "What Josiah Watched" is a nod to the 2021 psychological horror film *We Need to Do Something* — and a personal twist on my Friday night tradition.
 
 ---
-
-Made by Josiah. Built to terrify and testify to my code.
