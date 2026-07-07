@@ -16,7 +16,7 @@ export async function GET() {
             .toArray();
         const existingIds = new Set(existing.map(m => m.tmdbId));
 
-        const results = tmdbData.results.slice(0, 18).map(movie => ({
+        const results = tmdbData.results.filter(movie => !existingIds.has(movie.id)).slice(0, 18).map(movie => ({
             tmdbId: movie.id,
             foundTitle: movie.title,
             overview: movie.overview,

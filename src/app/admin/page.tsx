@@ -47,10 +47,12 @@ export default function AdminPage() {
     const [pendingDelete, setPendingDelete] = useState<Movie | null>(null);
     const deleteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const statusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const pendingDeleteRef = useRef<Movie | null>(null);
+    const flushRef = useRef<() => void>(() => {});
 
     useEffect(() => {
         return () => {
-            if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+            flushRef.current();                       // commit any pending delete on unmount
             if (statusTimerRef.current) clearTimeout(statusTimerRef.current);
         };
     }, []);
@@ -173,29 +175,45 @@ export default function AdminPage() {
         }
     }
 
+    async function commitDelete(movie: Movie) {
+        try {
+            const res = await fetch(`/api/movies/${movie._id}`, { method: "DELETE", keepalive: true });
+            if (!res.ok) throw new Error(`${res.status}`);
+            flashStatus(`"${movie.foundTitle}" deleted.`);
+        } catch {
+            flashStatus(`Failed to delete "${movie.foundTitle}".`);
+            setExistingMovies(prev => [...prev, movie]);
+        }
+    }
+
+    function flushPendingDelete() {
+        if (deleteTimerRef.current) { clearTimeout(deleteTimerRef.current); deleteTimerRef.current = null; }
+        const pending = pendingDeleteRef.current;
+        pendingDeleteRef.current = null;
+        if (pending) void commitDelete(pending);
+    }
+    // Keep the unmount cleanup pointed at the latest flush closure.
+    flushRef.current = flushPendingDelete;
+
     function handleDeleteMovie(movie: Movie) {
         if (!movie._id) return;
-        if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+        flushPendingDelete();                 // commit any prior pending delete before starting a new one
         setExistingMovies(prev => prev.filter(m => m._id !== movie._id));
         setPendingDelete(movie);
-        deleteTimerRef.current = setTimeout(async () => {
-            try {
-                await fetch(`/api/movies/${movie._id}`, { method: "DELETE" });
-                flashStatus(`"${movie.foundTitle}" deleted.`);
-            } catch {
-                flashStatus(`Failed to delete "${movie.foundTitle}".`);
-                setExistingMovies(prev => [...prev, movie]);
-            }
+        pendingDeleteRef.current = movie;
+        deleteTimerRef.current = setTimeout(() => {
+            deleteTimerRef.current = null;
             setPendingDelete(null);
+            flushPendingDelete();             // fires commitDelete for this movie
         }, 5000);
     }
 
     function handleUndoDelete() {
-        if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
-        if (pendingDelete) {
-            setExistingMovies(prev => [...prev, pendingDelete]);
-            setPendingDelete(null);
-        }
+        if (deleteTimerRef.current) { clearTimeout(deleteTimerRef.current); deleteTimerRef.current = null; }
+        const pending = pendingDeleteRef.current;
+        pendingDeleteRef.current = null;
+        if (pending) setExistingMovies(prev => [...prev, pending]);
+        setPendingDelete(null);
     }
 
     async function handleSetFeatured(e: React.FormEvent) {
