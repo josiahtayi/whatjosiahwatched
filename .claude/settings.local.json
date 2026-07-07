@@ -11,7 +11,11 @@
       "Bash(Select-Object FullName)",
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\Josiah\\\\Documents\\\\Work\\\\whatjosiahwatched\" -Force)",
       "Bash(npx tsc *)",
-      "Bash(echo \"---EXIT:$?---\")"
+      "Bash(echo \"---EXIT:$?---\")",
+      "Bash(node -p \"require\\('next/package.json'\\).version\")",
+      "Bash(echo \"installed next: $\\(node -p \"require\\('next/package.json'\\).version\"\\)\")",
+      "Bash(ls -la .vercel)",
+      "Bash(grep -rns --include=\"*\" -E \"output['\\\\\"]?\\\\s*[:=]\\\\s*['\\\\\"]export|['\\\\\"]export['\\\\\"]\" . --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=.git)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Josiah\\Documents\\Work\\whatjosiahwatched\\src\\app\\api\\tmdb\\recommendations"
